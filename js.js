@@ -282,7 +282,6 @@ imagesUpdate.addEventListener("transitionend", () => {
 });
 // #endregion slider glary update
 
-
 // #region add item
 let formCourse = document.querySelector(".form__course");
 let input = document.querySelector(".input");
