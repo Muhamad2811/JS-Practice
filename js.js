@@ -236,7 +236,6 @@ let currentMove = 1;
 imagesUpdate.style.transform = `translateX(${-(currentMove * imageWidth)}px)`;
 
 function moveSlid() {
-  bulletsUpdate[currentMove - 1].classList.add("active");
   imagesUpdate.classList.add("duration");
   imagesUpdate.style.transform = `translateX(${-currentMove * imageWidth}px)`;
 }
@@ -252,25 +251,23 @@ bulletsUpdate.forEach((el) => {
 });
 prevuesUpdate.addEventListener("click", () => {
   bulletsUpdate[currentMove - 1].classList.remove("active");
-  if (currentMove !== 1) {
-    currentMove--;
-    moveSlid();
+  if (currentMove === 1) {
+    bulletsUpdate[imgCount - 1].classList.add("active");
   } else {
-    currentMove = imgCount;
-    moveSlid();
+    bulletsUpdate[currentMove - 2].classList.add("active");
   }
+  currentMove--;
+  moveSlid();
 });
 nextUpdate.addEventListener("click", () => {
   bulletsUpdate[currentMove - 1].classList.remove("active");
-  if (currentMove !== imgCount) {
-    currentMove++;
-
-    moveSlid();
+  if (currentMove === imgCount) {
+    bulletsUpdate[0].classList.add("active");
   } else {
-    currentMove = 1;
-
-    moveSlid();
+    bulletsUpdate[currentMove].classList.add("active");
   }
+  currentMove++;
+  moveSlid();
 });
 imagesUpdate.addEventListener("transitionend", () => {
   if (currentMove === 0 || currentMove === imgCount + 1) {
@@ -284,6 +281,7 @@ imagesUpdate.addEventListener("transitionend", () => {
   }
 });
 // #endregion slider glary update
+
 
 // #region add item
 let formCourse = document.querySelector(".form__course");
