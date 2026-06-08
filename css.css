@@ -68,7 +68,7 @@ html {
 @media (width<750px) {
   .section-title {
     padding: 15px;
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 .section-title:hover {
@@ -278,7 +278,7 @@ nav a {
   nav a {
     padding: 5px;
     width: 55px;
-    font-size: 12px;
+    font-size: 11px;
   }
   .mode {
     width: 30px;
@@ -373,10 +373,19 @@ nav a {
   margin: 0 auto;
   width: fit-content;
   font-size: 24px;
+  margin-bottom: 20px;
+}
+@media (width<750px) {
+  .popup-validation {
+    width: 100%;
+  }
+  .popup-validation p {
+    font-size: 20px;
+  }
 }
 .btn-popup-validation {
   display: block;
-  margin: 20px auto 0;
+  margin: 0 auto;
   width: fit-content;
   padding: 10px;
   border-radius: var(--rounded);
@@ -466,7 +475,7 @@ nav a {
   width: 600px;
 }
 .input__course .input {
-  padding: 5px;
+  padding: 10px;
   width: 100%;
 }
 .submit-course {
@@ -484,14 +493,12 @@ nav a {
   background-color: white;
   border-radius: var(--rounded);
   justify-content: space-between;
+  align-items: center;
   padding: 15px;
   border: solid 2px var(--main-color);
 }
-.title-course {
-  padding: 10px;
-}
 .delete-course {
-  padding: 10px;
+  padding: 5px;
   border-radius: var(--rounded);
 }
 @media (width<750px) {
@@ -509,9 +516,6 @@ nav a {
   }
   .course {
     padding: 10px;
-  }
-  .title-course {
-    padding: 5px;
   }
   .delete-course {
     padding: 5px;
@@ -586,7 +590,7 @@ nav a {
 }
 .image-generation {
   border-radius: var(--rounded);
-  width: 300px;
+  width: 250px;
   height: 200px;
   display: block;
 }
