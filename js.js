@@ -183,7 +183,7 @@ let imagesScroll = document.querySelector(".images-scroll");
 let prevuesScroll = document.querySelector(".buttons-scroll .prevues-slider");
 let nextScroll = document.querySelector(".buttons-scroll .next-slider");
 let bulletsScroll = document.querySelectorAll(".buttons-scroll .bullet-slider");
-let imageWidth = "300";
+let imageWidth = "280";
 bulletsScroll.forEach((el) => {
   el.addEventListener("click", function () {
     document
