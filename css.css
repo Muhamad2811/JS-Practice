@@ -65,6 +65,12 @@ html {
   z-index: 0;
   font-size: 24px;
 }
+@media (width<750px) {
+  .section-title {
+    padding: 15px;
+    font-size: 20px;
+  }
+}
 .section-title:hover {
   color: white;
 }
@@ -130,6 +136,12 @@ html {
   bottom: 50px;
   right: 50px;
   z-index: 1;
+}
+@media (width<750px) {
+  .progress-spanner {
+    bottom: 20px;
+    right: 20px;
+  }
 }
 .btn-up {
   width: 50px;
@@ -257,8 +269,11 @@ nav a {
   transition: transform var(--duration);
 }
 @media (width<750px) {
+  .header {
+    padding: 10px;
+  }
   nav {
-    gap: 10px;
+    gap: 5px;
   }
   nav a {
     padding: 5px;
@@ -309,7 +324,6 @@ nav a {
   margin: 150px auto 0px auto;
 }
 .box-img img {
-  /* display: block; */
   position: absolute;
   width: 100%;
   bottom: 0;
@@ -424,9 +438,6 @@ nav a {
 }
 .images-opacity {
   position: relative;
-  /* width: 400px; */
-  /* height: 400px; */
-  /* margin: 0 auto; */
 }
 /* #endregion slider glary opacity */
 
@@ -435,7 +446,6 @@ nav a {
   width: fit-content;
   display: flex;
   transform: translateX(0px);
-  /* transition: var(--duration); */
 }
 /* #endregion slider glary scroll */
 
@@ -449,32 +459,32 @@ nav a {
   display: flex;
   gap: var(--gap);
   background-color: white;
-  padding: 20px;
+  padding: 15px;
   border-radius: var(--rounded);
   margin-bottom: 30px;
   border: solid 2px var(--main-color);
-  width: 350px;
+  width: 600px;
 }
 .input__course .input {
-  padding: 15px;
+  padding: 5px;
   width: 100%;
 }
 .submit-course {
-  padding: 10px;
+  padding: 5px;
   border-radius: var(--rounded);
 }
 .courses {
   display: flex;
   flex-direction: column;
   gap: var(--gap);
-  width: 300px;
+  width: 500px;
 }
 .course {
   display: flex;
   background-color: white;
   border-radius: var(--rounded);
   justify-content: space-between;
-  padding: 20px;
+  padding: 15px;
   border: solid 2px var(--main-color);
 }
 .title-course {
@@ -483,6 +493,29 @@ nav a {
 .delete-course {
   padding: 10px;
   border-radius: var(--rounded);
+}
+@media (width<750px) {
+  .form__course {
+    padding: 10px;
+  }
+  .input__course {
+    gap: 10px;
+    padding: 10px;
+    width: 100%;
+  }
+  .courses {
+    gap: 10px;
+    width: 90%;
+  }
+  .course {
+    padding: 10px;
+  }
+  .title-course {
+    padding: 5px;
+  }
+  .delete-course {
+    padding: 5px;
+  }
 }
 /* #endregion */
 
@@ -503,6 +536,11 @@ nav a {
   justify-content: center;
   width: 100%;
   margin: 0 auto;
+}
+@media (width<750px) {
+  .item-generation {
+    padding: 10px;
+  }
 }
 .button-generation {
   padding: 10px;
@@ -550,9 +588,7 @@ nav a {
   border-radius: var(--rounded);
   width: 300px;
   height: 200px;
-  /* padding: 20px; */
   display: block;
-  /* margin: 0 auto; */
 }
 .image-large {
   border-radius: var(--rounded);
