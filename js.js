@@ -480,7 +480,7 @@ cards.forEach((card) => {
 // #region progress skills
 let skillFill = document.querySelectorAll(".skill-fill");
 window.addEventListener("scroll", () => {
-  if (scrollY >= 3900) {
+  if (scrollY >= 4350) {
     skillFill.forEach((e) => {
       e.style.width = e.dataset.progress;
       let counter = parseInt(e.firstElementChild.textContent);
