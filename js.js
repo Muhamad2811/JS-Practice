@@ -55,7 +55,6 @@ validationFormPop.addEventListener("submit", (event) => {
   }
   if (validUN === false || validP === false) {
     event.preventDefault();
-    validSubmit.disabled = true;
     let divOverLay = document.createElement("div");
     divOverLay.classList.add("overlay");
     let divPopUp = document.createElement("div");
