@@ -500,3 +500,17 @@ const observer = new IntersectionObserver((entries) => {
 observer.observe(oneSkillFill);
 // #endregion progress skills
 
+// #region generate sections
+let sections = document.querySelectorAll("section");
+const observeSection = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("active-section");
+      observeSection.unobserve(entry.target);
+    }
+  });
+});
+sections.forEach((section) => {
+  observeSection.observe(section);
+});
+// #endregion generate sections
