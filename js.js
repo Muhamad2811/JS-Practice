@@ -479,18 +479,24 @@ cards.forEach((card) => {
 
 // #region progress skills
 let skillFill = document.querySelectorAll(".skill-fill");
-window.addEventListener("scroll", () => {
-  if (scrollY >= 4350) {
-    skillFill.forEach((e) => {
-      e.style.width = e.dataset.progress;
-      let counter = parseInt(e.firstElementChild.textContent);
-      let goalProgress = parseInt(e.dataset.progress);
-      setInterval(() => {
-        if (counter < goalProgress) {
-          e.firstElementChild.textContent = `${++counter}%`;
-        }
-      }, 2000 / goalProgress);
-    });
-  }
+let oneSkillFill = document.querySelector(".skill-fill");
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      skillFill.forEach((e) => {
+        e.style.width = e.dataset.progress;
+        let counter = parseInt(e.firstElementChild.textContent);
+        let goalProgress = parseInt(e.dataset.progress);
+        setInterval(() => {
+          if (counter < goalProgress) {
+            e.firstElementChild.textContent = `${++counter}%`;
+          }
+        }, 2000 / goalProgress);
+      });
+      observer.unobserve(oneSkillFill);
+    }
+  });
 });
+observer.observe(oneSkillFill);
 // #endregion progress skills
+
