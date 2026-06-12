@@ -228,6 +228,18 @@ html {
 }
 /* #endregion spike */
 
+/* #region sections */
+section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: var(--duration) 0.3s;
+}
+.active-section {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* #endregion sections */
+
 /* #region home */
 .header {
   display: flex;
