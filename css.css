@@ -188,16 +188,16 @@ html {
   opacity: 1;
 }
 .themes button:first-child {
-  background-color: red;
+  background-color: #0EA5E9;
 }
 .themes button:nth-child(2) {
-  background-color: green;
+  background-color: #10B981;
 }
 .themes button:nth-child(3) {
-  background-color: blue;
+  background-color: #7C3AED;
 }
 .themes button:last-child {
-  background-color: darkcyan;
+  background-color: #E11D48;
 }
 .clear-local-storage {
   position: fixed;
