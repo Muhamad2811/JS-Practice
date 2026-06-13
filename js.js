@@ -95,47 +95,36 @@ document.addEventListener("click", (event) => {
 let validationFormReg = document.querySelector(".validation-form-reg");
 let userNameReg = document.querySelector(".user-name-reg");
 let passwordReg = document.querySelector(".password-reg");
-let inputReg = document.querySelectorAll(".input-reg");
+let hintUser = document.querySelector(".hint-user");
+let hintPass = document.querySelector(".hint-pass");
 
 validationFormReg.addEventListener("submit", (event) => {
   let validUN = false;
   let validP = false;
-  if (userNameReg.value.match(/(a)/)) {
+  if (userNameReg.value.match(/example@gmail.com/)) {
     validUN = true;
   }
-  if (passwordReg.value.match(/a/)) {
+  if (passwordReg.value.match(/Algorithm28_11/)) {
     validP = true;
   }
   if (validUN === false || validP === false) {
     event.preventDefault();
     if (validUN === false && validP === false) {
-      let pUseName = document.createElement("p");
-      let pPassword = document.createElement("p");
-      pUseName.textContent = "*example@gmail.com";
-      pPassword.textContent = "A/Z,a/z,0/9,!@#$";
-      pUseName.classList.add("hint-reg");
-      pPassword.classList.add("hint-reg");
-      inputReg[0].append(pUseName);
-      inputReg[1].append(pPassword);
+      hintUser.style.opacity = 1;
+      hintPass.style.opacity = 1;
       setTimeout(() => {
-        pUseName.style.opacity = 0;
-        pPassword.style.opacity = 0;
+        hintUser.style.opacity = 0;
+        hintPass.style.opacity = 0;
       }, 3000);
     } else if (validUN === false) {
-      let pUseName = document.createElement("p");
-      pUseName.textContent = "*example@gmail.com";
-      pUseName.classList.add("hint-reg");
-      inputReg[0].append(pUseName);
+      hintUser.style.opacity = 1;
       setTimeout(() => {
-        pUseName.style.opacity = 0;
+        hintUser.style.opacity = 0;
       }, 3000);
     } else {
-      let pPassword = document.createElement("p");
-      pPassword.textContent = "A/Z,a/z,0/9,!@#$";
-      pPassword.classList.add("hint-reg");
-      inputReg[1].append(pPassword);
+      hintPass.style.opacity = 1;
       setTimeout(() => {
-        pPassword.style.opacity = 0;
+        hintPass.style.opacity = 0;
       }, 3000);
     }
   }
