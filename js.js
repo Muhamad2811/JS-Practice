@@ -101,10 +101,17 @@ let hintPass = document.querySelector(".hint-pass");
 validationFormReg.addEventListener("submit", (event) => {
   let validUN = false;
   let validP = false;
-  if (userNameReg.value.match(/example@gmail.com/)) {
+  // if (userNameReg.value.match(/\w+@gmail.com/)) {
+  if (/\w+@gmail.com/.test(userNameReg.value.trim())) {
     validUN = true;
   }
-  if (passwordReg.value.match(/Algorithm28_11/)) {
+  // if (passwordReg.value.match(/\w+(!|@|#|\$)/i)) {
+  if (
+    /(!|@|#|\$)/.test(passwordReg.value.trim()) &&
+    /[A-Z]/.test(passwordReg.value.trim()) &&
+    /[0-9]/.test(passwordReg.value.trim()) &&
+    /[a-z]/.test(passwordReg.value.trim())
+  ) {
     validP = true;
   }
   if (validUN === false || validP === false) {
