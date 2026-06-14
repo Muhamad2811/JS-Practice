@@ -132,26 +132,25 @@ validationFormReg.addEventListener("submit", (event) => {
 // #endregion validation form reg section
 
 // #region themes
+
 let themes = document.querySelector(".themes");
 let btnThemes = document.querySelectorAll(".themes button");
 let clear = document.querySelector(".clear-local-storage");
+let colorTheme = localStorage.getItem("color");
 
 clear.addEventListener("click", () => {
   localStorage.clear();
   location.reload();
 });
 
-if (localStorage.getItem("color") !== null) {
+if (colorTheme !== null) {
   btnThemes.forEach((e) => {
     e.classList.remove("active");
   });
   document
-    .querySelector(`[data-color=${localStorage.getItem("color")}]`)
+    .querySelector(`[data-color='${colorTheme}']`)
     .classList.add("active");
-  document.documentElement.style.setProperty(
-    "--main-color",
-    `${localStorage.getItem("color")}`,
-  );
+  document.documentElement.style.setProperty("--main-color", `#${colorTheme}`);
 }
 btnThemes.forEach((e) => {
   e.addEventListener("click", function (event) {
@@ -159,10 +158,10 @@ btnThemes.forEach((e) => {
       e.classList.remove("active");
     });
     this.classList.add("active");
-    localStorage.setItem("color", event.target.dataset.color);
+    localStorage.setItem("color", `${event.target.dataset.color}`);
     document.documentElement.style.setProperty(
       "--main-color",
-      `${localStorage.getItem("color")}`,
+      `#${localStorage.getItem("color")}`,
     );
   });
 });
