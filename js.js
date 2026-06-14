@@ -20,6 +20,58 @@ button.addEventListener("click", () => {
 });
 // #endregion
 
+// #region themes
+
+let themes = document.querySelector(".themes");
+let btnThemes = document.querySelectorAll(".themes button");
+let clear = document.querySelector(".clear-local-storage");
+let colorTheme = localStorage.getItem("color");
+
+clear.addEventListener("click", () => {
+  localStorage.clear();
+  location.reload();
+});
+
+if (colorTheme !== null) {
+  btnThemes.forEach((e) => {
+    e.classList.remove("active");
+  });
+  document
+    .querySelector(`[data-color='${colorTheme}']`)
+    .classList.add("active");
+  document.documentElement.style.setProperty("--main-color", `#${colorTheme}`);
+}
+btnThemes.forEach((e) => {
+  e.addEventListener("click", function (event) {
+    btnThemes.forEach((e) => {
+      e.classList.remove("active");
+    });
+    this.classList.add("active");
+    localStorage.setItem("color", `${event.target.dataset.color}`);
+    document.documentElement.style.setProperty(
+      "--main-color",
+      `#${localStorage.getItem("color")}`,
+    );
+  });
+});
+
+// #endregion themes
+
+// #region generate sections
+let sections = document.querySelectorAll("section");
+const observeSection = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("active-section");
+      observeSection.unobserve(entry.target);
+    }
+  });
+});
+sections.forEach((section) => {
+  observeSection.observe(section);
+});
+// #endregion generate sections
+
 // #region home
 let mode = document.querySelector(".mode");
 mode.addEventListener("click", () => {
@@ -101,11 +153,9 @@ let hintPass = document.querySelector(".hint-pass");
 validationFormReg.addEventListener("submit", (event) => {
   let validUN = false;
   let validP = false;
-  // if (userNameReg.value.match(/\w+@gmail.com/)) {
   if (/\w+@gmail.com/.test(userNameReg.value.trim())) {
     validUN = true;
   }
-  // if (passwordReg.value.match(/\w+(!|@|#|\$)/i)) {
   if (
     /(!|@|#|\$)/.test(passwordReg.value.trim()) &&
     /[A-Z]/.test(passwordReg.value.trim()) &&
@@ -137,43 +187,6 @@ validationFormReg.addEventListener("submit", (event) => {
   }
 });
 // #endregion validation form reg section
-
-// #region themes
-
-let themes = document.querySelector(".themes");
-let btnThemes = document.querySelectorAll(".themes button");
-let clear = document.querySelector(".clear-local-storage");
-let colorTheme = localStorage.getItem("color");
-
-clear.addEventListener("click", () => {
-  localStorage.clear();
-  location.reload();
-});
-
-if (colorTheme !== null) {
-  btnThemes.forEach((e) => {
-    e.classList.remove("active");
-  });
-  document
-    .querySelector(`[data-color='${colorTheme}']`)
-    .classList.add("active");
-  document.documentElement.style.setProperty("--main-color", `#${colorTheme}`);
-}
-btnThemes.forEach((e) => {
-  e.addEventListener("click", function (event) {
-    btnThemes.forEach((e) => {
-      e.classList.remove("active");
-    });
-    this.classList.add("active");
-    localStorage.setItem("color", `${event.target.dataset.color}`);
-    document.documentElement.style.setProperty(
-      "--main-color",
-      `#${localStorage.getItem("color")}`,
-    );
-  });
-});
-
-// #endregion themes
 
 // #region slider glary opacity
 let imagesOpacity = document.querySelectorAll(".images-opacity img");
@@ -226,48 +239,10 @@ nextOpacity.addEventListener("click", () => {
 });
 // #endregion slider glary opacity
 
-// #region slider glary scroll
-let imagesScroll = document.querySelector(".images-scroll");
-let prevuesScroll = document.querySelector(".buttons-scroll .prevues-slider");
-let nextScroll = document.querySelector(".buttons-scroll .next-slider");
-let bulletsScroll = document.querySelectorAll(".buttons-scroll .bullet-slider");
-let imageWidth = "280";
-bulletsScroll.forEach((el) => {
-  el.addEventListener("click", function () {
-    document
-      .querySelector(".buttons-scroll .active")
-      .classList.remove("active");
-    this.classList.add("active");
-    imagesScroll.style.transform = `translateX(${-(this.dataset.index * imageWidth)}px)`;
-  });
-});
-prevuesScroll.addEventListener("click", () => {
-  let current = document.querySelector(".buttons-scroll .active");
-  current.classList.remove("active");
-  if (current.previousElementSibling !== null) {
-    current.previousElementSibling.classList.add("active");
-    imagesScroll.style.transform = `translateX(${-(current.previousElementSibling.dataset.index * imageWidth)}px)`;
-  } else {
-    bulletsScroll[bulletsScroll.length - 1].classList.add("active");
-    imagesScroll.style.transform = `translateX(${-(bulletsScroll[bulletsScroll.length - 1].dataset.index * imageWidth)}px)`;
-  }
-});
-nextScroll.addEventListener("click", () => {
-  let current = document.querySelector(".buttons-scroll .active");
-  current.classList.remove("active");
-  if (current.nextElementSibling !== null) {
-    current.nextElementSibling.classList.add("active");
-    imagesScroll.style.transform = `translateX(${-(current.nextElementSibling.dataset.index * imageWidth)}px)`;
-  } else {
-    bulletsScroll[0].classList.add("active");
-    imagesScroll.style.transform = `translateX(${-bulletsScroll[0].dataset.index * imageWidth}px)`;
-  }
-});
-// #endregion slider glary scroll
-
 // #region slider glary update
 let imagesUpdate = document.querySelector(".images-update");
 let imgUpdate = document.querySelectorAll(".images-update img");
+let imageWidth = "280";
 
 let imgCount = imgUpdate.length;
 
@@ -494,18 +469,3 @@ const observer = new IntersectionObserver((entries) => {
 });
 observer.observe(oneSkillFill);
 // #endregion progress skills
-
-// #region generate sections
-let sections = document.querySelectorAll("section");
-const observeSection = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("active-section");
-      observeSection.unobserve(entry.target);
-    }
-  });
-});
-sections.forEach((section) => {
-  observeSection.observe(section);
-});
-// #endregion generate sections
