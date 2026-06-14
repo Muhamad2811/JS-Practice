@@ -493,7 +493,7 @@ nav a {
 }
 /* #endregion slider glary opacity */
 
-/* #region slider scroll */
+/* #region slider update scroll */
 .images-scroll {
   width: fit-content;
   display: flex;
