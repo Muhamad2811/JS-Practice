@@ -1,11 +1,13 @@
 /* #region global rules */
 :root {
-  --main-color: #0ea5e9;
   --rounded: 10px;
-  --c3d: #ddd;
+  --c3e: #eee;
   --c37: #777;
   --duration: 0.5s;
   --gap: 20px;
+  --color-main-sec: white;
+  --color-secondary-sec: #eee;
+  --color-failed: white;
 }
 * {
   padding: 0;
@@ -27,6 +29,11 @@ input {
   border-radius: var(--rounded);
   padding: 5px;
   border: solid 2px var(--main-color);
+  background-color: var(--color-failed);
+  transition: var(--duration);
+}
+.dark-mode input {
+  color: white;
 }
 a {
   text-decoration: none;
@@ -34,17 +41,28 @@ a {
 }
 html {
   scroll-behavior: smooth;
+  transition: var(--duration);
+  background-color: var(--color-main-sec);
 }
-
+html.dark-mode {
+  --color-main-sec: #222;
+  --color-secondary-sec: #333;
+  --color-failed: #4d5156;
+}
+html.dark-mode *::placeholder {
+  transition: var(--duration);
+  color: white;
+}
 .container {
   width: 80%;
   margin: 0 auto;
 }
 .padding-section {
   padding: 50px 0;
+  transition: var(--duration);
 }
 .color-section {
-  background-color: var(--c3d);
+  background-color: var(--color-secondary-sec);
 }
 .duration {
   transition: transform var(--duration);
@@ -64,6 +82,7 @@ html {
   transition: var(--duration);
   z-index: 0;
   font-size: 24px;
+  background-color: var(--color-failed);
 }
 @media (width<750px) {
   .section-title {
@@ -84,8 +103,8 @@ html {
   bottom: 50%;
   transform: translateY(50%);
   right: -30px;
-  transition: var(--duration);
   z-index: -1;
+  transition: var(--duration);
 }
 .section-title:hover::after {
   right: 0;
@@ -103,14 +122,21 @@ html {
   bottom: 50%;
   transform: translateY(50%);
   left: -30px;
-  transition: var(--duration);
   z-index: -1;
+  transition: var(--duration);
 }
 .section-title:hover::before {
   left: 0;
   width: 50%;
   height: 100%;
   border-radius: 0;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 2;
 }
 /* #endregion */
 
@@ -135,7 +161,7 @@ html {
   position: fixed;
   bottom: 50px;
   right: 50px;
-  z-index: 1;
+  z-index: 3;
 }
 @media (width<750px) {
   .progress-spanner {
@@ -155,12 +181,7 @@ html {
   height: 60px;
 }
 .circle {
-  stroke-dasharray: 158px;
-  stroke-dashoffset: 0;
   stroke: var(--main-color);
-  cx: 30px;
-  cy: 30px;
-  r: 25px;
   fill: none;
   stroke-width: 5px;
 }
@@ -187,18 +208,6 @@ html {
 .themes button:hover {
   opacity: 1;
 }
-.themes button:first-child {
-  background-color: #0ea5e9;
-}
-.themes button:nth-child(2) {
-  background-color: #10b981;
-}
-.themes button:nth-child(3) {
-  background-color: #7c3aed;
-}
-.themes button:last-child {
-  background-color: #e11d48;
-}
 .clear-local-storage {
   position: fixed;
   z-index: 3;
@@ -218,6 +227,7 @@ html {
 .spike::after {
   content: "";
   position: absolute;
+  z-index: 1;
   width: 100%;
   height: 30px;
   background:
@@ -225,6 +235,7 @@ html {
     linear-gradient(225deg, var(--main-color) 25%, transparent 25%);
   background-size: 30px 30px;
   background-repeat: repeat;
+  transition: var(--duration);
 }
 /* #endregion spike */
 
@@ -232,7 +243,7 @@ html {
 section {
   opacity: 0;
   transform: translateY(20px);
-  transition: var(--duration) 0.3s;
+  transition: transform opacity var(--duration) 0.3s;
 }
 .active-section {
   opacity: 1;
@@ -245,9 +256,10 @@ section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--c3d);
+  background-color: var(--color-secondary-sec);
   padding: 20px;
   border-radius: 10px;
+  transition: var(--duration);
 }
 nav {
   display: flex;
@@ -262,19 +274,22 @@ nav a {
   color: white;
   width: 90px;
   border-radius: 10px;
+  transition: var(--duration);
 }
 .mode {
   border: solid 1px black;
-  width: 40px;
-  height: 20px;
+  width: 44px;
+  height: 24px;
+  padding: 2px;
   border-radius: 50px;
   display: flex;
+  align-items: center;
   transition: background-color var(--duration);
 }
 .mode span {
   display: block;
-  width: 20px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   border: solid 1px black;
   border-radius: 50%;
   background-color: white;
@@ -301,10 +316,10 @@ nav a {
     height: 14px;
   }
 }
-.not-active {
-  background-color: #121212;
+.dark {
+  background-color: var(--color-main-sec);
 }
-.not-active span {
+.dark span {
   transform: translateX(100%);
 }
 .content-landing {
@@ -326,6 +341,7 @@ nav a {
   align-items: center;
   gap: var(--gap);
   color: var(--main-color);
+  transition: var(--duration);
 }
 .box-img {
   background-color: black;
@@ -341,6 +357,7 @@ nav a {
   bottom: 0;
   border-radius: 10px;
 }
+
 /* #endregion home */
 
 /* #region validation form pop */
@@ -366,14 +383,9 @@ nav a {
   padding: 10px;
   border-radius: var(--rounded);
 }
-.overlay {
-  position: fixed;
-  inset: 0;
-  background-color: black;
-  opacity: 0.5;
-}
 .popup-validation {
-  background-color: white;
+  background-color: var(--color-secondary-sec);
+  color: var(--main-color);
   width: 500px;
   position: fixed;
   right: 50%;
@@ -421,7 +433,7 @@ nav a {
   color: white;
   transition: opacity var(--duration);
   opacity: 0;
-  left: 40%;
+  left: 35%;
   top: calc(100% + 5px);
 }
 .hint-reg::after {
@@ -431,6 +443,7 @@ nav a {
   top: -5px;
   left: 10px;
   transform: translateY(-50%);
+  transition: var(--duration);
   border-color: transparent transparent var(--main-color) transparent;
 }
 
@@ -493,13 +506,13 @@ nav a {
 }
 /* #endregion slider glary opacity */
 
-/* #region slider update scroll */
+/* #region slider scroll */
 .images-scroll {
   width: fit-content;
   display: flex;
   transform: translateX(0px);
 }
-/* #endregion slider glary scroll */
+/* #endregion slider scroll */
 
 /* #region add course */
 .form__course {
@@ -510,9 +523,10 @@ nav a {
 .input__course {
   display: flex;
   gap: var(--gap);
-  background-color: white;
+  background-color: var(--color-failed);
   padding: 15px;
   border-radius: var(--rounded);
+  transition: var(--duration);
   margin-bottom: 30px;
   border: solid 2px var(--main-color);
   width: 600px;
@@ -533,12 +547,16 @@ nav a {
 }
 .course {
   display: flex;
-  background-color: white;
+  background-color: var(--color-failed);
   border-radius: var(--rounded);
   justify-content: space-between;
   align-items: center;
+  transition: var(--duration);
   padding: 15px;
   border: solid 2px var(--main-color);
+}
+.dark-mode .course {
+  color: white;
 }
 .delete-course {
   padding: 5px;
@@ -577,6 +595,7 @@ nav a {
 .item-generation {
   border-radius: var(--rounded);
   background-color: var(--main-color);
+  transition: var(--duration);
   color: white;
   padding: 20px;
   display: flex;
@@ -621,7 +640,7 @@ nav a {
   content: "";
   position: absolute;
   inset: 0;
-  background-color: var(--c3d);
+  background-color: var(--c3e);
   transform: scale(0);
   width: 100%;
   height: 100%;
@@ -670,6 +689,7 @@ nav a {
 }
 .loading {
   border: 3px solid var(--main-color);
+  transition: var(--duration);
   display: flex;
   width: 100px;
   height: 100px;
@@ -701,6 +721,7 @@ nav a {
 }
 .spanner {
   border: 3px solid var(--main-color);
+  transition: var(--duration);
   width: 100px;
   height: 100px;
   display: flex;
@@ -722,6 +743,7 @@ nav a {
 }
 .spanner-gradient {
   border: 3px solid var(--main-color);
+  transition: var(--duration);
   width: 100px;
   height: 100px;
   display: flex;
@@ -740,8 +762,9 @@ nav a {
   content: "";
   position: absolute;
   inset: 5px;
-  background-color: white;
+  background-color: var(--color-main-sec);
   border-radius: inherit;
+  transition: var(--duration);
 }
 @keyframes spanner-grad {
   to {
@@ -787,6 +810,7 @@ nav a {
   position: absolute;
   border-radius: var(--rounded);
   backface-visibility: hidden;
+  transition: var(--duration);
 }
 .face1 {
   background-color: var(--main-color);
@@ -814,23 +838,25 @@ nav a {
   margin-right: 10px;
   padding: 10px;
   background-color: var(--main-color);
+  transition: var(--duration);
   color: white;
   border-radius: var(--rounded);
 }
 .skill-bar {
   width: 100%;
   height: 20px;
-  background-color: #ddd;
+  background-color: var(--color-secondary-sec);
+  transition: var(--duration);
 }
 .skill-fill {
   width: 0;
   height: 20px;
   background-color: var(--main-color);
+  transition: var(--duration);
   transition: width 2s linear;
   display: flex;
   justify-content: flex-end;
 }
-
 .progress-counter {
   color: white;
   font-size: 12px;
@@ -839,6 +865,7 @@ nav a {
   top: -30px;
   padding: 5px;
   background-color: var(--main-color);
+  transition: var(--duration);
   border-radius: 5px;
   left: 20px;
 }
@@ -846,6 +873,7 @@ nav a {
   width: fit-content;
   border: solid 5px;
   border-color: var(--main-color) transparent transparent transparent;
+  transition: var(--duration);
   left: 5px;
   position: relative;
   top: -10px;
