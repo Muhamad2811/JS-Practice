@@ -308,12 +308,12 @@ nav a {
     font-size: 10px;
   }
   .mode {
-    width: 30px;
-    height: 15px;
+    width: 25px;
+    height: 14px;
   }
   .mode span {
-    width: 15px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
   }
 }
 .dark {
