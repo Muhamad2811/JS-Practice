@@ -1,13 +1,34 @@
 // #region progress par
+
 let progressPar = document.querySelector(".progress-par");
 let progressButton = document.querySelector(".circle");
+
+function getMaxScroll() {
+  return document.documentElement.scrollHeight - window.innerHeight;
+}
+
+progressButton.style.strokeDasharray =
+  progressButton.getAttribute("r") * 2 * Math.PI;
+let dashArray = progressButton.style.strokeDasharray;
+updateProgress();
+
+function updateProgress() {
+  let precision = window.scrollY / getMaxScroll();
+  progressPar.style.width = `${precision * 100}%`;
+  progressButton.style.strokeDashoffset = `${dashArray * (1 - precision)}`;
+}
+
+let ticking = false;
 window.addEventListener("scroll", () => {
-  let precision =
-    (window.scrollY * 100) /
-    (document.documentElement.scrollHeight - window.innerHeight);
-  progressPar.style.width = `${precision}%`;
-  progressButton.style.strokeDashoffset = `${158 * (1 - precision / 100)}`;
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      updateProgress();
+      ticking = false;
+    });
+    ticking = true;
+  }
 });
+
 // #endregion
 
 // #region button up
@@ -22,35 +43,53 @@ button.addEventListener("click", () => {
 
 // #region themes
 
-let themes = document.querySelector(".themes");
 let btnThemes = document.querySelectorAll(".themes button");
 let clear = document.querySelector(".clear-local-storage");
 let colorTheme = localStorage.getItem("color");
+
+function clearActiveTheme() {
+  btnThemes.forEach((e) => {
+    e.classList.remove("active");
+  });
+}
+
+btnThemes.forEach((e) => {
+  e.style.backgroundColor = `#${e.dataset.color}`;
+});
+
+if (colorTheme !== null) {
+  clearActiveTheme(btnThemes);
+  activeBtn = document.querySelector(`[data-color='${colorTheme}']`);
+  if (activeBtn) {
+    activeBtn.classList.add("active");
+    document.documentElement.style.setProperty(
+      "--main-color",
+      `#${colorTheme}`,
+    );
+  } else {
+    localStorage.removeItem("color");
+  }
+} else {
+  document.documentElement.style.setProperty(
+    "--main-color",
+    `#${document.querySelector(".themes .active").dataset.color}`,
+  );
+}
 
 clear.addEventListener("click", () => {
   localStorage.clear();
   location.reload();
 });
 
-if (colorTheme !== null) {
-  btnThemes.forEach((e) => {
-    e.classList.remove("active");
-  });
-  document
-    .querySelector(`[data-color='${colorTheme}']`)
-    .classList.add("active");
-  document.documentElement.style.setProperty("--main-color", `#${colorTheme}`);
-}
 btnThemes.forEach((e) => {
   e.addEventListener("click", function (event) {
-    btnThemes.forEach((e) => {
-      e.classList.remove("active");
-    });
+    clearActiveTheme(btnThemes);
     this.classList.add("active");
-    localStorage.setItem("color", `${event.target.dataset.color}`);
+    colorTheme = event.target.dataset.color;
+    localStorage.setItem("color", colorTheme);
     document.documentElement.style.setProperty(
       "--main-color",
-      `#${localStorage.getItem("color")}`,
+      `#${colorTheme}`,
     );
   });
 });
@@ -74,16 +113,16 @@ sections.forEach((section) => {
 
 // #region home
 let mode = document.querySelector(".mode");
+if (localStorage.getItem("dark") === "true") {
+  document.documentElement.classList.add("dark-mode");
+  mode.classList.add("dark");
+}
 mode.addEventListener("click", () => {
-  if (mode.classList.contains("not-active")) {
-    mode.classList.remove("not-active");
-    document.body.style.backgroundColor = "white";
-    document.documentElement.style.setProperty("--c3d", "#ddd");
-  } else {
-    mode.classList.add("not-active");
-    document.body.style.backgroundColor = "#333333";
-    document.documentElement.style.setProperty("--c3d", "#292929");
-  }
+  mode.classList.toggle("dark");
+  document.documentElement.classList.toggle("dark-mode");
+  localStorage.getItem("dark") === "true"
+    ? localStorage.setItem("dark", "false")
+    : localStorage.setItem("dark", "true");
 });
 // #endregion home
 
@@ -91,54 +130,53 @@ mode.addEventListener("click", () => {
 let validationFormPop = document.querySelector(".validation-form-pop");
 let userNamePop = document.querySelector(".user-name-pop");
 let passwordPop = document.querySelector(".password-pop");
-let validSubmit = document.querySelector(".validation-submit");
+
+function createElementPopUp(tag, classPop = "", textElement = "") {
+  let elementPop = document.createElement(tag);
+  if (classPop) {
+    elementPop.classList.add(classPop);
+  }
+  if (textElement) {
+    elementPop.textContent = textElement;
+  }
+  return elementPop;
+}
+
+function createError(message) {
+  return createElementPopUp("p", "", message);
+}
 
 validationFormPop.addEventListener("submit", (event) => {
-  let validUN = false;
-  let validP = false;
-  if (
-    userNamePop.value.trim().length > 5 &&
-    userNamePop.value.trim().length < 10
-  ) {
-    validUN = true;
+  const errors = [];
+  let validUN =
+    userNamePop.value.trim().length > 5 && userNamePop.value.trim().length < 10;
+  let validP = passwordPop.value.trim().length > 5;
+  if (!validUN) {
+    errors.push("User name length must be > 5 and < 10 char");
   }
-  if (passwordPop.value.trim().length > 5) {
-    validP = true;
+  if (!validP) {
+    errors.push("Password length must be > 5");
   }
-  if (validUN === false || validP === false) {
+  if (errors.length) {
     event.preventDefault();
-    let divOverLay = document.createElement("div");
-    divOverLay.classList.add("overlay");
-    let divPopUp = document.createElement("div");
-    divPopUp.classList.add("popup-validation");
-    let button = document.createElement("button");
-    button.classList.add("btn-popup-validation");
-    button.textContent = "OK";
-    if (validUN === false && validP === false) {
-      let pUseName = document.createElement("p");
-      pUseName.textContent = "User name length must be > 5 and < 10 char";
-      let pPassword = document.createElement("p");
-      pPassword.textContent = "Password length must be > 5";
-      divPopUp.append(pUseName, pPassword, button);
-    } else if (validUN === false) {
-      let pUseName = document.createElement("p");
-      pUseName.textContent = "User name length must be > 5 and < 10 char";
-      divPopUp.append(pUseName, button);
-    } else {
-      let pPassword = document.createElement("p");
-      pPassword.textContent = "Password length must be > 5";
-      divPopUp.append(pPassword, button);
-    }
-
+    let divOverLay = createElementPopUp("div", "overlay");
+    let divPopUp = createElementPopUp("div", "popup-validation");
+    let button = createElementPopUp("button", "btn-popup-validation", "OK");
+    errors.forEach((error) => {
+      divPopUp.append(createError(error));
+    });
+    divPopUp.append(button);
+    divPopUp.overlay = divOverLay;
     document.body.append(divOverLay, divPopUp);
+    button.focus();
   }
 });
 
 document.addEventListener("click", (event) => {
-  let buttonPopup = event.target;
-  if (buttonPopup.classList.contains("btn-popup-validation")) {
-    buttonPopup.parentElement.previousElementSibling.remove();
-    buttonPopup.parentElement.remove();
+  if (event.target.classList.contains("btn-popup-validation")) {
+    const popup = event.target.parentElement;
+    popup.overlay.remove();
+    popup.remove();
   }
 });
 // #endregion validation form section
@@ -150,39 +188,38 @@ let passwordReg = document.querySelector(".password-reg");
 let hintUser = document.querySelector(".hint-user");
 let hintPass = document.querySelector(".hint-pass");
 
+function showHint(hint) {
+  hint.style.opacity = 1;
+  setTimeout(() => {
+    hint.style.opacity = 0;
+  }, 3000);
+}
+
+function validationUserName() {
+  return /^\w+@gmail\.com$/.test(userNameReg.value.trim());
+}
+function validationPassword(passwordValue = passwordReg.value.trim()) {
+  return (
+    /(!|@|#|\$)/.test(passwordValue) &&
+    /[A-Z]/.test(passwordValue) &&
+    /[0-9]/.test(passwordValue) &&
+    /[a-z]/.test(passwordValue)
+  );
+}
+
 validationFormReg.addEventListener("submit", (event) => {
-  let validUN = false;
-  let validP = false;
-  if (/\w+@gmail.com/.test(userNameReg.value.trim())) {
-    validUN = true;
-  }
-  if (
-    /(!|@|#|\$)/.test(passwordReg.value.trim()) &&
-    /[A-Z]/.test(passwordReg.value.trim()) &&
-    /[0-9]/.test(passwordReg.value.trim()) &&
-    /[a-z]/.test(passwordReg.value.trim())
-  ) {
-    validP = true;
-  }
+  let validUN = validationUserName();
+  let validP = validationPassword();
+
   if (validUN === false || validP === false) {
     event.preventDefault();
     if (validUN === false && validP === false) {
-      hintUser.style.opacity = 1;
-      hintPass.style.opacity = 1;
-      setTimeout(() => {
-        hintUser.style.opacity = 0;
-        hintPass.style.opacity = 0;
-      }, 3000);
+      showHint(hintUser);
+      showHint(hintPass);
     } else if (validUN === false) {
-      hintUser.style.opacity = 1;
-      setTimeout(() => {
-        hintUser.style.opacity = 0;
-      }, 3000);
+      showHint(hintUser);
     } else {
-      hintPass.style.opacity = 1;
-      setTimeout(() => {
-        hintPass.style.opacity = 0;
-      }, 3000);
+      showHint(hintPass);
     }
   }
 });
@@ -195,174 +232,147 @@ let nextOpacity = document.querySelector(".buttons-opacity .next-slider");
 let bulletsOpacity = document.querySelectorAll(
   ".buttons-opacity .bullet-slider",
 );
-
-bulletsOpacity.forEach((el) => {
-  el.addEventListener("click", function () {
-    document
-      .querySelector(".buttons-opacity .active")
-      .classList.remove("active");
-    document
-      .querySelector(".images-opacity .active")
-      .classList.remove("active");
-
-    this.classList.add("active");
-    imagesOpacity[this.dataset.index].classList.add("active");
-  });
-});
+let activeIndex = 0;
+function moveOpacity(newIndex) {
+  newIndex = (newIndex + imagesOpacity.length) % imagesOpacity.length;
+  bulletsOpacity[activeIndex].classList.remove("active");
+  imagesOpacity[activeIndex].classList.remove("active");
+  activeIndex = newIndex;
+  bulletsOpacity[activeIndex].classList.add("active");
+  imagesOpacity[activeIndex].classList.add("active");
+}
 prevuesOpacity.addEventListener("click", () => {
-  let current = document.querySelector(".buttons-opacity .active");
-  current.classList.remove("active");
-  imagesOpacity[current.dataset.index].classList.remove("active");
-  if (current.previousElementSibling !== null) {
-    current.previousElementSibling.classList.add("active");
-    imagesOpacity[current.previousElementSibling.dataset.index].classList.add(
-      "active",
-    );
-  } else {
-    bulletsOpacity[bulletsOpacity.length - 1].classList.add("active");
-    imagesOpacity[imagesOpacity.length - 1].classList.add("active");
-  }
+  moveOpacity(activeIndex - 1);
 });
 nextOpacity.addEventListener("click", () => {
-  let current = document.querySelector(".buttons-opacity .active");
-  current.classList.remove("active");
-  imagesOpacity[current.dataset.index].classList.remove("active");
-  if (current.nextElementSibling !== null) {
-    current.nextElementSibling.classList.add("active");
-    imagesOpacity[current.nextElementSibling.dataset.index].classList.add(
-      "active",
-    );
-  } else {
-    bulletsOpacity[0].classList.add("active");
-    imagesOpacity[0].classList.add("active");
-  }
+  moveOpacity(activeIndex + 1);
+});
+bulletsOpacity.forEach((el) => {
+  el.addEventListener("click", function () {
+    moveOpacity(+this.dataset.index);
+  });
 });
 // #endregion slider glary opacity
 
-// #region slider glary update
-let imagesUpdate = document.querySelector(".images-update");
-let imgUpdate = document.querySelectorAll(".images-update img");
-let imageWidth = "280";
+// #region slider glary
+let imagesScroll = document.querySelector(".images-scroll");
+let imgScroll = document.querySelectorAll(".images-scroll img");
+let slider = document.querySelector(".images-slider");
+let imageWidth = imgScroll[0].getBoundingClientRect().width;
+let imgCount = imgScroll.length;
 
-let imgCount = imgUpdate.length;
+let prevuesScroll = document.querySelector(".buttons-scroll .prevues-slider");
+let nextScroll = document.querySelector(".buttons-scroll .next-slider");
+let bulletsScroll = document.querySelectorAll(".buttons-scroll .bullet-slider");
 
-let prevuesUpdate = document.querySelector(".buttons-update .prevues-slider");
-let nextUpdate = document.querySelector(".buttons-update .next-slider");
-let bulletsUpdate = document.querySelectorAll(".buttons-update .bullet-slider");
-
-let lastImage = imgUpdate[imgCount - 1].cloneNode(true);
-let firstImage = imgUpdate[0].cloneNode(true);
-imagesUpdate.prepend(lastImage);
-imagesUpdate.append(firstImage);
+let lastImage = imgScroll[imgCount - 1].cloneNode(true);
+let firstImage = imgScroll[0].cloneNode(true);
+imagesScroll.prepend(lastImage);
+imagesScroll.append(firstImage);
 
 let currentMove = 1;
-imagesUpdate.style.transform = `translateX(${-(currentMove * imageWidth)}px)`;
+imagesScroll.style.transform = `translateX(${-(currentMove * imageWidth)}px)`;
 
-function moveSlid() {
-  imagesUpdate.classList.add("duration");
-  imagesUpdate.style.transform = `translateX(${-currentMove * imageWidth}px)`;
-}
-
-bulletsUpdate.forEach((el) => {
+bulletsScroll.forEach((el) => {
   el.addEventListener("click", function () {
-    bulletsUpdate[currentMove - 1].classList.remove("active");
-    currentMove = +this.dataset.index + 1;
-    this.classList.add("active");
-    imagesUpdate.classList.add("duration");
-    imagesUpdate.style.transform = `translateX(${-(currentMove * imageWidth)}px)`;
+    moveSlider(+this.dataset.index + 1);
   });
 });
-prevuesUpdate.addEventListener("click", () => {
-  bulletsUpdate[currentMove - 1].classList.remove("active");
-  if (currentMove === 1) {
-    bulletsUpdate[imgCount - 1].classList.add("active");
-  } else {
-    bulletsUpdate[currentMove - 2].classList.add("active");
-  }
-  currentMove--;
-  moveSlid();
+prevuesScroll.addEventListener("click", () => {
+  moveSlider(currentMove - 1);
 });
-nextUpdate.addEventListener("click", () => {
-  bulletsUpdate[currentMove - 1].classList.remove("active");
-  if (currentMove === imgCount) {
-    bulletsUpdate[0].classList.add("active");
-  } else {
-    bulletsUpdate[currentMove].classList.add("active");
-  }
-  currentMove++;
-  moveSlid();
+nextScroll.addEventListener("click", () => {
+  moveSlider(currentMove + 1);
 });
-imagesUpdate.addEventListener("transitionend", () => {
+let isAnimating = false;
+function moveSlider(newInd) {
+  if (isAnimating) return;
+  isAnimating = true;
+  bulletsScroll[currentMove - 1].classList.remove("active");
+  currentMove = newInd;
+  newInd = newInd === 0 ? imgCount : newInd === imgCount + 1 ? 1 : newInd;
+  bulletsScroll[newInd - 1].classList.add("active");
+  imagesScroll.classList.add("duration");
+  imagesScroll.style.transform = `translateX(${-(currentMove * imageWidth)}px)`;
+}
+imagesScroll.addEventListener("transitionend", () => {
   if (currentMove === 0 || currentMove === imgCount + 1) {
-    imagesUpdate.classList.remove("duration");
+    imagesScroll.classList.remove("duration");
     if (currentMove === 0) {
       currentMove = imgCount;
     } else if (currentMove === imgCount + 1) {
       currentMove = 1;
     }
-    imagesUpdate.style.transform = `translateX(${-currentMove * imageWidth}px)`;
+    imagesScroll.style.transform = `translateX(${-currentMove * imageWidth}px)`;
   }
+  isAnimating = false;
 });
-// #endregion slider glary update
+// #endregion slider glary
 
 // #region add item
 let formCourse = document.querySelector(".form__course");
 let input = document.querySelector(".input");
-let submitCourse = document.querySelector(".submit-course");
 let courses = document.querySelector(".courses");
 
-showOldData();
-
-formCourse.addEventListener("submit", (event) => {
-  event.preventDefault();
-  let oldData = localStorage.getItem("oldData");
-  if (oldData === null) {
-    localStorage.setItem("oldData", input.value);
-  } else {
-    courses.innerHTML = "";
-    localStorage.setItem("oldData", `${oldData},${input.value}`);
+function createItem(tag, className, textItem) {
+  let theItem = document.createElement(tag);
+  theItem.classList.add(className);
+  if (textItem) {
+    theItem.textContent = textItem;
   }
-  showOldData();
-  input.value = "";
-});
-
-document.addEventListener("click", function (event) {
-  let dlt = event.target;
-  if (dlt.classList.contains("delete-course")) {
-    let updatedData = localStorage
-      .getItem("oldData")
-      .split(",")
-      .filter((e) => {
-        return e !== dlt.previousElementSibling.textContent;
-      })
-      .join(",");
-    localStorage.setItem("oldData", updatedData);
-    if (dlt.classList.contains("delete-course")) {
-      dlt.parentElement.remove();
-      if (localStorage.getItem("oldData") === "") {
-        localStorage.removeItem("oldData");
-      }
-    }
-  }
-});
+  return theItem;
+}
 
 function showOldData() {
   if (localStorage.getItem("oldData") !== null) {
     let oldData = localStorage.getItem("oldData");
     oldData.split(",").forEach((e) => {
-      let div = document.createElement("div");
-      div.classList.add("course");
-      let p = document.createElement("p");
-      p.classList.add("title-course");
-      p.textContent = e;
-      let button = document.createElement("button");
-      button.classList.add("delete-course");
-      button.textContent = "Delete";
+      let div = createItem("div", "course");
+      let p = createItem("p", "title-course", e);
+      let button = createItem("button", "delete-course", "Delete");
       div.append(p, button);
       courses.append(div);
     });
   }
 }
+
+showOldData();
+
+formCourse.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (input.value) {
+    let oldData = localStorage.getItem("oldData");
+    if (oldData === null) {
+      localStorage.setItem("oldData", input.value);
+    } else {
+      courses.innerHTML = "";
+      localStorage.setItem("oldData", `${oldData},${input.value}`);
+    }
+    showOldData();
+    input.value = "";
+  }
+});
+document.addEventListener("click", function (event) {
+  let dlt = event.target;
+  if (dlt.classList.contains("delete-course")) {
+    let indexCourse = 0;
+    let allCourses = document.querySelectorAll(".courses .course");
+    allCourses.forEach((e) => {
+      if (e.lastElementChild === dlt) {
+        let updatedData = localStorage.getItem("oldData").split(",");
+        updatedData.splice(indexCourse, 1);
+        updatedData.join(",");
+        localStorage.setItem("oldData", updatedData);
+      } else {
+        indexCourse++;
+      }
+    });
+    dlt.parentElement.remove();
+    if (localStorage.getItem("oldData") === "") {
+      localStorage.removeItem("oldData");
+    }
+  }
+});
 // #endregion
 
 // #region generation text
@@ -370,14 +380,15 @@ let itemsGeneration = document.querySelector(".items-generation");
 let buttonGenerationText = document.querySelector(".button-generation.text");
 let nxtElement = generationItems();
 buttonGenerationText.addEventListener("click", () => {
-  newElement = nxtElement.next();
-  let p = document.createElement("p");
-  p.textContent = newElement.value;
-  p.classList.add("item-generation");
-  itemsGeneration.append(p);
-  if (newElement.value === "six") {
+  let newElement = nxtElement.next();
+  if (newElement.done) {
     buttonGenerationText.disabled = true;
     buttonGenerationText.style.opacity = 0.5;
+  } else {
+    let p = document.createElement("p");
+    p.textContent = newElement.value;
+    p.classList.add("item-generation");
+    itemsGeneration.append(p);
   }
 });
 function* generationItems() {
@@ -394,24 +405,25 @@ let buttonGenerationImages = document.querySelector(
   ".button-generation.btn-images",
 );
 let nxtImage = generationImages();
-buttonGenerationImages.addEventListener("click", () => {
-  newImage = nxtImage.next();
-  let img = document.createElement("img");
-  img.src = newImage.value;
-  img.classList.add("image-generation");
-  let div = document.createElement("div");
-  div.classList.add("over");
-  div.append(img);
-  imagesGeneration.append(div);
-  if (newImage.value === "img/img-4.jpg") {
-    buttonGenerationImages.disabled = true;
-    buttonGenerationImages.style.opacity = 0.5;
-  }
-});
 function* generationImages() {
   yield "img/img-3.jpg";
   yield "img/img-4.jpg";
 }
+buttonGenerationImages.addEventListener("click", () => {
+  let newImage = nxtImage.next();
+  if (newImage.done) {
+    buttonGenerationImages.disabled = true;
+    buttonGenerationImages.style.opacity = 0.5;
+  } else {
+    let img = document.createElement("img");
+    img.src = newImage.value;
+    img.classList.add("image-generation");
+    let div = document.createElement("div");
+    div.classList.add("over");
+    div.append(img);
+    imagesGeneration.append(div);
+  }
+});
 document.addEventListener("click", (event) => {
   if (event.target.firstElementChild !== null) {
     let img = event.target.firstElementChild;
@@ -420,7 +432,9 @@ document.addEventListener("click", (event) => {
       imag.classList.add("image-large");
       imag.src = img.src;
       let divOverLay = document.createElement("div");
-      divOverLay.classList.add("overlay");
+      divOverLay.classList.add("overlay", "overlay-image");
+      document.overlay = divOverLay;
+      document.imag = imag;
       divOverLay.style.cursor = "pointer";
       document.body.append(imag, divOverLay);
     }
@@ -428,11 +442,9 @@ document.addEventListener("click", (event) => {
 });
 document.addEventListener("click", (event) => {
   let deleteImg = event.target;
-  if (deleteImg.classList.contains("overlay")) {
-    if (document.body.lastElementChild.classList.contains("overlay")) {
-      document.body.lastElementChild.previousElementSibling.remove();
-      document.body.lastElementChild.remove();
-    }
+  if (deleteImg.classList.contains("overlay-image")) {
+    document.overlay.remove();
+    document.imag.remove();
   }
 });
 // #endregion generation images
@@ -449,23 +461,33 @@ cards.forEach((card) => {
 
 // #region progress skills
 let skillFill = document.querySelectorAll(".skill-fill");
-let oneSkillFill = document.querySelector(".skill-fill");
+let firstSkillFill = document.querySelector(".skill-fill");
+
+function updateCounter(e, goalProgress, startTime) {
+  let durationProgress = 2000;
+  let elapsed = performance.now() - startTime;
+  let theProgress = Math.min(elapsed / durationProgress, 1);
+  let counter = Math.round(theProgress * goalProgress);
+  e.firstElementChild.textContent = `${counter}%`;
+  if (theProgress < 1) {
+    requestAnimationFrame(() => {
+      updateCounter(e, goalProgress, startTime);
+    });
+  }
+}
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
       skillFill.forEach((e) => {
         e.style.width = e.dataset.progress;
-        let counter = parseInt(e.firstElementChild.textContent);
         let goalProgress = parseInt(e.dataset.progress);
-        setInterval(() => {
-          if (counter < goalProgress) {
-            e.firstElementChild.textContent = `${++counter}%`;
-          }
-        }, 2000 / goalProgress);
+        requestAnimationFrame((startTime) => {
+          updateCounter(e, goalProgress, startTime);
+        });
       });
-      observer.unobserve(oneSkillFill);
+      observer.unobserve(firstSkillFill);
     }
   });
 });
-observer.observe(oneSkillFill);
+observer.observe(firstSkillFill);
 // #endregion progress skills
