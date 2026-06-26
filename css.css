@@ -433,7 +433,7 @@ nav a {
   color: white;
   transition: opacity var(--duration);
   opacity: 0;
-  left: 35%;
+  left: 30%;
   top: calc(100% + 5px);
 }
 .hint-reg::after {
