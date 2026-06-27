@@ -245,7 +245,8 @@ section {
   transform: translateY(20px);
   transition:
     transform var(--duration) 0.5s,
-    opacity var(--duration) 0.5s;
+    opacity var(--duration) 0.5s,
+    background-color var(--duration);
 }
 .active-section {
   opacity: 1;
