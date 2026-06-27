@@ -243,10 +243,7 @@ html.dark-mode *::placeholder {
 section {
   opacity: 0;
   transform: translateY(20px);
-  transition:
-    transform var(--duration) 0.5s,
-    opacity var(--duration) 0.5s,
-    background-color var(--duration);
+  transition: transform var(--duration) 0.5s , opacity var(--duration) 0.5s , background-color var(--duration);
 }
 .active-section {
   opacity: 1;
